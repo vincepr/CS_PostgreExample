@@ -1,5 +1,7 @@
 ﻿# PostgreSQL and csharp
 
+Connecting a dotnet webapi with postgresql. All started in one dockerfile.
+
 ## setup
 ```
 dotnet add package Microsoft.EntityFrameworkCore.Tools
@@ -120,7 +122,9 @@ Update the `appsettings.json`. Notice we changed the `Server=` to `localhost` an
 }
 ```
 
-### the dirty way to fill our db
+### the dirty way to fill our db 
+(better would be to create the db if not existing on local machine. Or maybe entityframework provides a better way)
+
 - since the db stores fiels to the volume wa can just:
 If we were to quickly want to test if the connection string is ok we could:
 
