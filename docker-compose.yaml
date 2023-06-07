@@ -1,0 +1,47 @@
+version: '3.8'
+
+# network to connect containers (sql-db and dotnet-api)
+networks:
+    dev:
+        driver: bridge
+
+services:
+
+    #the dotnet api   -   running on port 8080
+    cs-api:
+        # name we get when building the Dockerfile
+        image: docker.io/library/postgre_api
+        depends_on:
+            - "postgre_db"
+        container_name: cs-api-services
+        ports:
+            - "8080:80"
+        build:
+            context: .
+            dockerfile: Dockerfile
+        environment:
+            # the connection string (we use this env to pass in connectionstrings to our api)
+            - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Server=postgre_db;Port=5432;Database=SampleDbDriver; IntegratedSecurity=true;Pooling=true;
+            - ASPNETCORE_URLS=http://+:80
+        networks:
+            - dev
+
+    # the db we use to connect to   -   running on 5433
+    postgre_db:
+        image: postgres:latest
+        container_name: postgre_db
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=SampleDbDriver
+        ports:
+            - "5433:5432"
+        # volume for persistand data between sessions
+        volumes:
+            - app_data:/var/lib/postgresql/data
+        networks:
+            - dev
+
+# list all our volumes and define them/name them:
+volumes:
+    app_data:
